@@ -1,0 +1,45 @@
+<resources>
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="done">Done</string>
+    <string name="continue_">Continue</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="try_again">Try Again</string>
+
+    <!-- Environment Splash Screen -->
+    <string name="envSplashTTitle">%s Environment</string>
+    <string name="envSplashTVersion">Version %s</string>
+
+    <!-- Login -->
+    <string name="loginTfUserName">Username</string>
+    <string name="loginTfPassword">Password</string>
+    <string name="loginBtnLogin">Log In</string>
+
+    <!-- Main -->
+    <string name="mainBniProducts">Products</string>
+    <string name="mainBniSettings">Settings</string>
+
+    <!-- Product Details -->
+    <string name="productDetailsTitleFormat">Product Details #%d</string>
+    <string name="productDetailsFavorite">Favorite</string>
+    <string name="productDetailsBtnReturnToList">Return to Products List</string>
+    <string name="productDetailsBtnGoToDetails">Go to Product Details</string>
+
+    <!-- Settings -->
+    <string name="settingsBtnLogout">Log Out</string>
+    <string name="settingsLogoutDialogTitle">Log Out</string>
+    <string name="settingsLogoutDialogMessage">Are you sure you want to log out?</string>
+
+    <!-- Errors -->
+    <string name="errorGeneric">Something went wrong</string>
+    <string name="errorGenericOops">Oops. Something went wrong</string>
+    <string name="errorServerCommunication">Looks like we are running into some issues communicating with the server</string>
+    <string name="errorRequestGeneral">Looks like we are running into some issues. Please try again later</string>
+    <string name="errorTimeout">It\'s taking too long to load the info. Check your network connection and try again.</string>
+    <string name="errorNetworkConnectionTitle">You’re offline.</string>
+    <string name="errorNetworkConnectionMessage">Please check your connection and try again.</string>
+    <string name="errorUnauthorized">Authorization error. Please try to log out and log in again</string>
+</resources>
