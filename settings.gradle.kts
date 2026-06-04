@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AiAgenticApp"
+rootProject.name = "AiCalendar"
 include(":app")
