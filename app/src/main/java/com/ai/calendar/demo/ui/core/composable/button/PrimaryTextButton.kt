@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.ai.calendar.demo.ui.theme.AiCalendarTheme
 import com.ai.calendar.demo.ui.theme.appColorsScheme
@@ -15,6 +16,9 @@ fun PrimaryTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    defaultColor: Color = MaterialTheme.appColorsScheme.textPrimary,
+    pressedColor: Color = MaterialTheme.appColorsScheme.textSecondary,
+    disabledColor: Color = MaterialTheme.appColorsScheme.textPrimaryDisabled,
     contentPadding: PaddingValues = PaddingValues(horizontal = marginPrimary, vertical = marginPrimary),
 ) {
     BaseTextButton(
@@ -23,9 +27,9 @@ fun PrimaryTextButton(
         modifier = modifier,
         isEnabled = isEnabled,
         contentPadding = contentPadding,
-        defaultColor = MaterialTheme.appColorsScheme.textPrimary,
-        pressedColor = MaterialTheme.appColorsScheme.textSecondary,
-        disabledColor = MaterialTheme.appColorsScheme.textPrimaryDisabled
+        defaultColor = defaultColor,
+        pressedColor = pressedColor,
+        disabledColor = disabledColor,
     )
 }
 

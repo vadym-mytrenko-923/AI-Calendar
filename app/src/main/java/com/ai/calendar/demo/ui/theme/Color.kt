@@ -11,9 +11,9 @@ object AppColorsLight {
     val Success = Color(0xFF61D782)
 
     // Primary
-    val Primary = Color(0xFF4CAF50)
-    val PrimaryActive = Color(0xFF388E3C)
-    val PrimaryDisabled = Color(0xFF388E3C)
+    val Primary = Color(0xFFE91E63)
+    val PrimaryActive = Color(0xFFC2185B)
+    val PrimaryDisabled = Color(0xFFF48FB1)
 
     // Backgrounds & Surfaces
     val Background = Color(0xFFF9FAFB)
@@ -42,7 +42,7 @@ object AppColorsLight {
     val ButtonPrimary = Primary
     val ButtonPrimaryActive = PrimaryActive
     val ButtonPrimaryDisabled = PrimaryDisabled
-    val ButtonPrimaryShadow = Color(0xFF2E7D32)
+    val ButtonPrimaryShadow = Color(0xFFAD1457)
     val ButtonPrimaryOutline = Color(0xFFFFFFFF)
     val ButtonPrimaryOutlineActive = Color(0xFFB8BABC)
     val ButtonPrimaryOutlineDisabled = Color(0xFF898C8F)
@@ -55,7 +55,7 @@ object AppColorsLight {
     val IconOnDark = Color(0xFFFFFFFFF)
 
     // Calendar
-    val CalendarTodayAccent = Color(0xFFE91E63)
+    val CalendarTodayAccent = Color(0xFFD81B60)
 
     // Misc
     val CardShadow = Color(0x0F000000)
@@ -67,8 +67,8 @@ object AppColorsDark {
     val Error = Color(0xFFE53935)
 
     // Primary
-    val Primary = Color(0xFF36883A)
-    val PrimaryDark = Color(0xFF216B26)
+    val Primary = Color(0xFFFF4081)
+    val PrimaryDark = Color(0xFFC2185B)
 
     // Calendar
     val CalendarTodayAccent = Color(0xFFFF4081)

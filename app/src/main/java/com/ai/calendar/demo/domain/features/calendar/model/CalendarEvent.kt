@@ -13,4 +13,5 @@ data class CalendarEvent(
     val endMillis: Long,
     val isAllDay: Boolean = false,
     val calendarId: Long = 0,
+    val attendees: List<String> = emptyList(),
 ) : Parcelable
