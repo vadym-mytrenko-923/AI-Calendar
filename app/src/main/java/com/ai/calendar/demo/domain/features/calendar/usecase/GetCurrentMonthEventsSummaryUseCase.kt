@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @Reusable
-class GetFormattedEventsListUseCase @Inject constructor(
+class GetCurrentMonthEventsSummaryUseCase @Inject constructor(
     private val repository: CalendarRepository,
     private val textMapper: CalendarEventTextMapper,
 ) : BaseNoParamsUseCase<Result<String>>() {

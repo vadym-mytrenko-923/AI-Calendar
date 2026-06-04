@@ -1,11 +1,11 @@
 package com.ai.calendar.demo.agent.tool
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
-import com.ai.calendar.demo.domain.features.calendar.usecase.GetFormattedEventsListUseCase
+import com.ai.calendar.demo.domain.features.calendar.usecase.GetCurrentMonthEventsSummaryUseCase
 import javax.inject.Inject
 
 class ListEventsTool @Inject constructor(
-    private val getFormattedEventsListUseCase: GetFormattedEventsListUseCase,
+    private val getFormattedEventsListUseCase: GetCurrentMonthEventsSummaryUseCase,
 ) : LlmAgentTool {
     override val name: String = "list_events"
 
