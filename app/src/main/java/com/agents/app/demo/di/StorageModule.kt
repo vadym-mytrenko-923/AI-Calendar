@@ -7,6 +7,10 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.agents.app.demo.data.local.storage.app.AppStorage
+import com.agents.app.demo.data.local.storage.app.AppStorageImpl
+import com.agents.app.demo.data.local.storage.user.UserStorage
+import com.agents.app.demo.data.local.storage.user.UserStorageImpl
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.RegistryConfiguration
@@ -14,10 +18,6 @@ import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.aead.AesGcmKeyManager
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.gson.Gson
-import com.agents.app.demo.data.local.storage.app.AppStorage
-import com.agents.app.demo.data.local.storage.app.AppStorageImpl
-import com.agents.app.demo.data.local.storage.user.UserStorage
-import com.agents.app.demo.data.local.storage.user.UserStorageImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

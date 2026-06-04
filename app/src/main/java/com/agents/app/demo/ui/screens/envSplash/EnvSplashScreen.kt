@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.agents.app.demo.R
+import com.agents.app.demo.ui.theme.AiAgenticAppTheme
 import com.agents.app.demo.ui.theme.AppColorsLight
 import com.agents.app.demo.ui.theme.AppImages
-import com.agents.app.demo.ui.theme.AiAgenticAppTheme
 import com.agents.app.demo.ui.theme.marginPrimary2X
 import com.agents.app.demo.utils.AppInfo
 

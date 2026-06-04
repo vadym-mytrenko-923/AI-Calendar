@@ -19,6 +19,17 @@
     <string name="loginBtnLogin">Log In</string>
 
     <!-- Main -->
+    <string name="mainBniCalendar">Calendar</string>
+
+    <!-- Calendar -->
+    <string name="calendarTitle">Calendar</string>
+    <string name="calendarTodayBtn">Today</string>
+    <string name="calendarNoEvents">No events</string>
+    <string name="calendarPermissionRequired">Calendar permission required</string>
+    <string name="calendarPreviousMonth">Previous month</string>
+    <string name="calendarNextMonth">Next month</string>
+    <string name="calendarAllDay">All day</string>
+    <string name="calendarTimeRangeFormat">%1$s – %2$s</string>
     <string name="mainBniProducts">Products</string>
     <string name="mainBniSettings">Settings</string>
 

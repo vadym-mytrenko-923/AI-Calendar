@@ -1,6 +1,5 @@
 package com.agents.app.demo.data.local.storage.user
 
-import com.agents.app.demo.data.features.auth.local.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface UserStorage {

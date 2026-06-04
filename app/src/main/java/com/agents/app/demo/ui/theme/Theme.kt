@@ -56,6 +56,7 @@ private val LightAppColorsScheme = AppColorsScheme(
     iconOnDark = AppColorsLight.IconOnDark,
     cardShadow = AppColorsLight.CardShadow,
     borderIconBtn = AppColorsLight.BorderIconButton,
+    calendarTodayAccent = AppColorsLight.CalendarTodayAccent,
 )
 
 private val DarkAppColorsScheme = AppColorsScheme(
@@ -65,7 +66,8 @@ private val DarkAppColorsScheme = AppColorsScheme(
     textSecondary = AppColorsDark.TextSecondary,
     textDark = AppColorsDark.TextDark,
     btnPrimaryText = AppColorsDark.TextPrimary,
-    btnPrimaryDisabled = AppColorsDark.ButtonPrimaryDisabled
+    btnPrimaryDisabled = AppColorsDark.ButtonPrimaryDisabled,
+    calendarTodayAccent = AppColorsDark.CalendarTodayAccent,
 )
 
 private val LocalAppColorsScheme = staticCompositionLocalOf { AppColorsScheme() }

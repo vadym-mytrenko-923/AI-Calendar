@@ -1,15 +1,13 @@
 package com.agents.app.demo.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.agents.app.demo.BuildConfig
-import com.agents.app.demo.data.features.auth.remote.api.AuthApi
-import com.agents.app.demo.data.features.products.remote.api.ProductsApi
 import com.agents.app.demo.data.remote.interceptor.AuthInterceptor
 import com.agents.app.demo.data.remote.interceptor.ConnectionTimeoutInterceptor
 import com.agents.app.demo.data.remote.interceptor.CustomHttpLoggingInterceptor
 import com.agents.app.demo.data.remote.interceptor.GzipDecodingInterceptor
 import com.agents.app.demo.data.remote.util.HttpLogger
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,14 +22,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
-    @Singleton
-    @Provides
-    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
-
-    @Singleton
-    @Provides
-    fun provideProductsApi(retrofit: Retrofit): ProductsApi = retrofit.create(ProductsApi::class.java)
 
     @Singleton
     @Provides

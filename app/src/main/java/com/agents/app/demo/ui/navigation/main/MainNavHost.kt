@@ -9,27 +9,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.agents.app.demo.ui.navigation.base.NavigationEffectHandler
 import com.agents.app.demo.ui.navigation.model.MainNavRoute
-import com.agents.app.demo.ui.screens.product.ProductsScreen
-import com.agents.app.demo.ui.screens.product.details.ProductDetailsScreen
-import com.agents.app.demo.ui.screens.settings.SettingsScreen
+import com.agents.app.demo.ui.screens.calendar.CalendarScreen
 
 @Composable
-fun MainNavHost(mainNavigator: MainNavigator, navController: NavHostController, padding: PaddingValues) {
+fun MainNavHost(
+    mainNavigator: MainNavigator,
+    navController: NavHostController,
+    padding: PaddingValues = PaddingValues()
+) {
     NavigationEffectHandler(navigator = mainNavigator, navController = navController)
 
     NavHost(
         navController = navController,
-        startDestination = MainNavRoute.ProductsList,
-        modifier = Modifier.padding(padding)
+        startDestination = MainNavRoute.Calendar,
+        modifier = Modifier.padding(padding),
     ) {
-        composable<MainNavRoute.ProductsList> {
-            ProductsScreen()
-        }
-        composable<MainNavRoute.Settings> {
-            SettingsScreen()
-        }
-        composable<MainNavRoute.ProductDetails> {
-            ProductDetailsScreen()
+        composable<MainNavRoute.Calendar> {
+            CalendarScreen()
         }
     }
 }

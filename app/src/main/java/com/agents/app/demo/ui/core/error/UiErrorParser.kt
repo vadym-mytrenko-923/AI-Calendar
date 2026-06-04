@@ -1,7 +1,5 @@
 package com.agents.app.demo.ui.core.error
 
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.agents.app.demo.R
 import com.agents.app.demo.data.common.toObject
 import com.agents.app.demo.ui.core.error.model.UiError
@@ -9,6 +7,8 @@ import com.agents.app.demo.ui.theme.AppIcons
 import com.agents.app.demo.utils.NonTranslatableStringResource
 import com.agents.app.demo.utils.StringResource
 import com.agents.app.demo.utils.notNullOrEmpty
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import retrofit2.HttpException
 import timber.log.Timber
 import java.net.ConnectException

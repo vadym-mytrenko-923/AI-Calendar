@@ -11,6 +11,9 @@ object AppIcons {
     val ArrowBack = R.drawable.ic_arrow_back
     val PasswordVisible = R.drawable.ic_password_visible
     val PasswordNotVisible = R.drawable.ic_password_not_visible
+    val ChevronLeft = R.drawable.ic_chevron_left
+    val ChevronRight = R.drawable.ic_chevron_right
+    val Calendar = R.drawable.ic_calendar
     val Products = R.drawable.ic_products
 }
 
