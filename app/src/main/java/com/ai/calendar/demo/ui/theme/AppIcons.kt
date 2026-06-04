@@ -15,6 +15,7 @@ object AppIcons {
     val ChevronRight = R.drawable.ic_chevron_right
     val Calendar = R.drawable.ic_calendar
     val Products = R.drawable.ic_products
+    val Add = R.drawable.ic_add
 }
 
 object AppImages {

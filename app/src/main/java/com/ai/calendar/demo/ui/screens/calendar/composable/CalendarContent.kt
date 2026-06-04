@@ -81,6 +81,7 @@ fun CalendarContent(
                 DayEventsList(
                     modifier = Modifier.weight(1f),
                     events = events,
+                    onEventClick = { onIntent(CalendarIntent.EventClicked(it)) },
                 )
             }
         }

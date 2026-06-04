@@ -24,11 +24,13 @@ import com.ai.calendar.demo.ui.theme.marginPrimaryHalf
 fun EventCard(
     modifier: Modifier = Modifier,
     event: CalendarEventUiModel,
+    onClick: () -> Unit = {},
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = containerShapeSmall,
         color = MaterialTheme.colorScheme.primaryContainer,
+        onClick = onClick,
     ) {
         Column(modifier = Modifier.padding(horizontal = marginPrimary2X, vertical = marginPrimary1_5X)) {
             Text(

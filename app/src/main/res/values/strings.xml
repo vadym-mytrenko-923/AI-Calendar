@@ -30,6 +30,28 @@
     <string name="calendarNextMonth">Next month</string>
     <string name="calendarAllDay">All day</string>
     <string name="calendarTimeRangeFormat">%1$s – %2$s</string>
+
+    <!-- Event Editor -->
+    <string name="editorTitleNew">New Event</string>
+    <string name="editorTitleEdit">Edit Event</string>
+    <string name="editorLabelTitle">Title</string>
+    <string name="editorLabelDate">Date</string>
+    <string name="editorLabelStartTime">Start time</string>
+    <string name="editorLabelEndTime">End time</string>
+    <string name="editorTimePickerTitle">Select time</string>
+    <string name="editorLabelDuration">Duration</string>
+    <string name="editorDurationFormat">%d min</string>
+    <string name="editorLabelAttendees">Attendees</string>
+    <string name="editorAttendeePlaceholder">email@example.com</string>
+    <string name="editorAttendeeError">Enter a valid email address</string>
+    <string name="editorLabelNotes">Notes</string>
+    <string name="editorBtnSave">Save</string>
+    <string name="editorBtnDelete">Delete Event</string>
+    <string name="editorFabContentDescription">Add event</string>
+    <string name="editorDuration30m">30m</string>
+    <string name="editorDuration1h">1h</string>
+    <string name="editorDuration1_5h">1.5h</string>
+    <string name="editorDuration2h">2h</string>
     <string name="mainBniProducts">Products</string>
     <string name="mainBniSettings">Settings</string>
 

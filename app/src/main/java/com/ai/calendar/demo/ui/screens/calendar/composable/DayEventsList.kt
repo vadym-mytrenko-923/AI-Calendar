@@ -24,6 +24,7 @@ import com.ai.calendar.demo.ui.theme.marginPrimary2X
 fun DayEventsList(
     modifier: Modifier = Modifier,
     events: List<CalendarEventUiModel>,
+    onEventClick: (CalendarEventUiModel) -> Unit = {},
 ) {
     if (events.isEmpty()) {
         Box(
@@ -44,7 +45,10 @@ fun DayEventsList(
             verticalArrangement = Arrangement.spacedBy(marginPrimary1_5X),
         ) {
             items(events, key = { it.id }) { event ->
-                EventCard(event = event)
+                EventCard(
+                    event = event,
+                    onClick = { onEventClick(event) },
+                )
             }
         }
     }

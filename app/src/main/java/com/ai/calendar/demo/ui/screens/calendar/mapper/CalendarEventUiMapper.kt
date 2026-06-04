@@ -3,14 +3,14 @@ package com.ai.calendar.demo.ui.screens.calendar.mapper
 import com.ai.calendar.demo.R
 import com.ai.calendar.demo.domain.features.calendar.model.CalendarEvent
 import com.ai.calendar.demo.ui.screens.calendar.model.CalendarEventUiModel
-import com.ai.calendar.demo.ui.screens.calendar.utils.CalendarDateFormatter
+import com.ai.calendar.demo.ui.screens.calendar.utils.TimeFormatter
 import com.ai.calendar.demo.utils.StringResource
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
 
 class CalendarEventUiMapper @Inject constructor(
-    private val dateFormatter: CalendarDateFormatter,
+    private val timeFormatter: TimeFormatter,
 ) {
     fun map(events: List<CalendarEvent>): List<CalendarEventUiModel> = events.map { map(it) }
 
@@ -24,8 +24,8 @@ class CalendarEventUiMapper @Inject constructor(
         } else {
             StringResource(
                 R.string.calendarTimeRangeFormat,
-                dateFormatter.formatTime(startTime),
-                dateFormatter.formatTime(endTime),
+                timeFormatter.format(startTime),
+                timeFormatter.format(endTime),
             )
         }
 
