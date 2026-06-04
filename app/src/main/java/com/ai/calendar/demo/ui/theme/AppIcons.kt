@@ -16,6 +16,7 @@ object AppIcons {
     val Calendar = R.drawable.ic_calendar
     val Products = R.drawable.ic_products
     val Add = R.drawable.ic_add
+    val MagicWand = R.drawable.ic_magic_wand
 }
 
 object AppImages {

@@ -52,6 +52,13 @@
     <string name="editorDuration1h">1h</string>
     <string name="editorDuration1_5h">1.5h</string>
     <string name="editorDuration2h">2h</string>
+
+    <!-- AI Chat -->
+    <string name="aiChatFabDescription">AI Assistant</string>
+    <string name="aiChatTitle">AI Assistant</string>
+    <string name="aiChatPromptPlaceholder">Ask me anything…</string>
+    <string name="aiChatBtnSend">Send</string>
+    <string name="aiChatEmptyState">No messages yet. Ask me anything!</string>
     <string name="mainBniProducts">Products</string>
     <string name="mainBniSettings">Settings</string>
 
