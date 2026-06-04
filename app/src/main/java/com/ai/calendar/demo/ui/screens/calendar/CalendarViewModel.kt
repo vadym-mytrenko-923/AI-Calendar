@@ -12,8 +12,8 @@ import com.ai.calendar.demo.ui.screens.calendar.addedit.AddEditEventEffect
 import com.ai.calendar.demo.ui.screens.calendar.addedit.AddEditEventSvm
 import com.ai.calendar.demo.ui.screens.calendar.mapper.CalendarEventUiMapper
 import com.ai.calendar.demo.ui.screens.calendar.mapper.MonthGridBuilder
-import com.ai.calendar.demo.ui.screens.calendar.utils.DateFormatter
 import com.ai.calendar.demo.ui.screens.chat.AiChatSvm
+import com.ai.calendar.demo.utils.date.DateFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.YearMonth

@@ -8,9 +8,9 @@ import com.ai.calendar.demo.domain.features.calendar.usecase.UpdateEventUseCase
 import com.ai.calendar.demo.ui.base.BaseSubViewModel
 import com.ai.calendar.demo.ui.screens.calendar.addedit.mapper.toDurationChips
 import com.ai.calendar.demo.ui.screens.calendar.addedit.model.DurationOption
-import com.ai.calendar.demo.ui.screens.calendar.utils.DateFormatter
-import com.ai.calendar.demo.ui.screens.calendar.utils.TimeFormatter
 import com.ai.calendar.demo.ui.screens.calendar.utils.isValidEmail
+import com.ai.calendar.demo.utils.date.DateFormatter
+import com.ai.calendar.demo.utils.time.TimeFormatter
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate

@@ -1,0 +1,23 @@
+package com.ai.calendar.demo.domain.features.calendar.usecase
+
+import com.ai.calendar.demo.domain.base.result.useResultWrapper
+import com.ai.calendar.demo.domain.base.usecase.BaseNoParamsUseCase
+import com.ai.calendar.demo.domain.features.calendar.CalendarRepository
+import com.ai.calendar.demo.domain.features.calendar.mapper.CalendarEventTextMapper
+import dagger.Reusable
+import kotlinx.coroutines.flow.first
+import javax.inject.Inject
+
+@Reusable
+class GetNearestEventUseCase @Inject constructor(
+    private val repository: CalendarRepository,
+    private val textMapper: CalendarEventTextMapper,
+) : BaseNoParamsUseCase<Result<String>>() {
+
+    override suspend fun execute(): Result<String> = useResultWrapper {
+        val now = System.currentTimeMillis()
+        val events = repository.eventsFlow.first()
+        val nearest = events.filter { it.endMillis > now }.minByOrNull { it.startMillis }
+        textMapper.format(nearest ?: return@useResultWrapper "No upcoming events found.")
+    }
+}

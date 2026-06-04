@@ -1,12 +1,12 @@
 package com.ai.calendar.demo.ui.screens.chat
 
-import com.ai.calendar.demo.domain.features.ai.usecase.SendAiMessageUseCase
+import com.ai.calendar.demo.domain.features.ai.usecase.SendAgentMessageUseCase
 import com.ai.calendar.demo.ui.base.BaseSubViewModel
 import com.ai.calendar.demo.ui.screens.chat.model.ChatMessageUiModel
 import javax.inject.Inject
 
 class AiChatSvm @Inject constructor(
-    private val sendAiMessageUseCase: SendAiMessageUseCase,
+    private val sendAgentMessageUseCase: SendAgentMessageUseCase,
 ) : BaseSubViewModel<AiChatState, AiChatIntent, AiChatEffect>(
     initialState = AiChatState(),
 ) {
@@ -33,7 +33,7 @@ class AiChatSvm @Inject constructor(
         }
 
         launchSvmScope {
-            sendAiMessageUseCase(question)
+            sendAgentMessageUseCase(question)
                 .onSuccess { response ->
                     val aiMessage = ChatMessageUiModel(text = response, isUser = false)
                     updateUiState {

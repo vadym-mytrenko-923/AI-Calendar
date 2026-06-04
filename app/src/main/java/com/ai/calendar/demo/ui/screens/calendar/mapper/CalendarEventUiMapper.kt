@@ -3,8 +3,8 @@ package com.ai.calendar.demo.ui.screens.calendar.mapper
 import com.ai.calendar.demo.R
 import com.ai.calendar.demo.domain.features.calendar.model.CalendarEvent
 import com.ai.calendar.demo.ui.screens.calendar.model.CalendarEventUiModel
-import com.ai.calendar.demo.ui.screens.calendar.utils.TimeFormatter
 import com.ai.calendar.demo.utils.StringResource
+import com.ai.calendar.demo.utils.time.TimeFormatter
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.ai.calendar.demo.ui.screens.calendar.utils
+package com.ai.calendar.demo.utils.time
 
 import java.time.LocalTime
 
