@@ -89,7 +89,7 @@ class AddEditEventSvm @Inject constructor(
                 formattedDate = editorDateFormatter.format(date),
                 formattedStartTime = timeFormatter.format(start),
                 formattedEndTime = timeFormatter.format(end),
-                durationChips = durationOption.toDurationChips(),
+                durationChips = DurationOption.entries.toDurationChips(durationOption),
             )
         }
     }
@@ -121,7 +121,7 @@ class AddEditEventSvm @Inject constructor(
                 formattedStartTime = timeFormatter.format(newStart),
                 formattedEndTime = timeFormatter.format(newEnd),
                 selectedDurationOption = durationOption,
-                durationChips = durationOption.toDurationChips(),
+                durationChips = DurationOption.entries.toDurationChips(durationOption),
                 showStartTimePicker = false,
             )
         }
@@ -137,7 +137,7 @@ class AddEditEventSvm @Inject constructor(
                 endTime = clampedEnd,
                 formattedEndTime = timeFormatter.format(clampedEnd),
                 selectedDurationOption = durationOption,
-                durationChips = durationOption.toDurationChips(),
+                durationChips = DurationOption.entries.toDurationChips(durationOption),
                 showEndTimePicker = false,
             )
         }
@@ -150,7 +150,7 @@ class AddEditEventSvm @Inject constructor(
                 endTime = newEnd,
                 formattedEndTime = timeFormatter.format(newEnd),
                 selectedDurationOption = option,
-                durationChips = option.toDurationChips(),
+                durationChips = DurationOption.entries.toDurationChips(option),
             )
         }
     }

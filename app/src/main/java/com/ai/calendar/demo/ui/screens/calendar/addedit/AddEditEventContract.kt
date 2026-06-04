@@ -25,7 +25,7 @@ data class AddEditEventState(
     val formattedDate: String = "",
     val formattedStartTime: String = "",
     val formattedEndTime: String = "",
-    val durationChips: List<DurationChipUiModel> = DurationOption.ONE_HOUR.toDurationChips(),
+    val durationChips: List<DurationChipUiModel> = DurationOption.entries.toDurationChips(DurationOption.ONE_HOUR),
     val showStartTimePicker: Boolean = false,
     val showEndTimePicker: Boolean = false,
 ) : Parcelable {
