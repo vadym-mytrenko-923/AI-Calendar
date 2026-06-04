@@ -24,13 +24,13 @@ val UAT_BASE_URL: String by project
 val PROD_BASE_URL: String by project
 
 android {
-    namespace = "com.agents.app.demo"
+    namespace = "com.ai.calendar.demo"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.agents.app.demo"
+        applicationId = "com.ai.calendar.demo"
         minSdk = 26
         targetSdk = 36
         versionCode = VERSION_BUILD
@@ -54,19 +54,19 @@ android {
         create("qa") {
             dimension = "default"
             buildConfigField("String", "BASE_URL", "\"$QA_BASE_URL\"")
-            resValue("string", "app_name", "AI Agentic App QA")
+            resValue("string", "app_name", "AI Calendar QA")
             versionCode = VERSION_BUILD
         }
         create("uat") {
             dimension = "default"
             buildConfigField("String", "BASE_URL", "\"$UAT_BASE_URL\"")
-            resValue("string", "app_name", "AI Agentic App UAT")
+            resValue("string", "app_name", "AI Calendar UAT")
             versionCode = VERSION_BUILD + 1
         }
         create("production") {
             dimension = "default"
             buildConfigField("String", "BASE_URL", "\"$PROD_BASE_URL\"")
-            resValue("string", "app_name", "AI Agentic App")
+            resValue("string", "app_name", "AI Calendar")
             versionCode = VERSION_BUILD + 2
         }
     }
