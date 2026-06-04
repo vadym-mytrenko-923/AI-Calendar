@@ -16,7 +16,6 @@ import com.agents.app.demo.ui.screens.calendar.composable.preview.CalendarPrevie
 import com.agents.app.demo.ui.screens.calendar.model.CalendarEventUiModel
 import com.agents.app.demo.ui.theme.AiAgenticAppTheme
 import com.agents.app.demo.ui.theme.containerShapeSmall
-import com.agents.app.demo.ui.theme.marginPrimary
 import com.agents.app.demo.ui.theme.marginPrimary1_5X
 import com.agents.app.demo.ui.theme.marginPrimary2X
 import com.agents.app.demo.ui.theme.marginPrimaryHalf

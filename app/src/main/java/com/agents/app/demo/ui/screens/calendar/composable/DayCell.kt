@@ -17,8 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.agents.app.demo.ui.theme.AiAgenticAppTheme
+import com.agents.app.demo.ui.theme.appColorsScheme
+import com.agents.app.demo.ui.theme.calendarDayCellSize
+import com.agents.app.demo.ui.theme.eventIndicatorOffset
 import com.agents.app.demo.ui.theme.eventIndicatorSize
-import com.agents.app.demo.ui.theme.marginPrimary1_25X
 
 @Composable
 fun DayCell(
@@ -29,42 +31,49 @@ fun DayCell(
     hasEvents: Boolean,
     onClick: () -> Unit,
 ) {
+    val todayAccent = MaterialTheme.appColorsScheme.calendarTodayAccent
+
     val backgroundColor = when {
-        isToday -> MaterialTheme.colorScheme.onSurface
-        isSelected -> MaterialTheme.colorScheme.surfaceVariant
+        isSelected -> MaterialTheme.colorScheme.onSurface
         else -> Color.Transparent
     }
 
     val textColor = when {
-        isToday -> MaterialTheme.colorScheme.surface
+        isSelected -> MaterialTheme.colorScheme.surface
+        isToday -> todayAccent
         else -> MaterialTheme.colorScheme.onSurface
     }
 
-    val fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal
+    val fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Normal
 
     Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .clickable(onClick = onClick),
+        modifier = modifier.aspectRatio(1f),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = day.toString(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = textColor,
-            fontWeight = fontWeight,
-        )
+        Box(
+            modifier = Modifier
+                .size(calendarDayCellSize)
+                .clip(CircleShape)
+                .background(backgroundColor)
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = day.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = textColor,
+                fontWeight = fontWeight,
+            )
+        }
 
         if (hasEvents) {
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = marginPrimary1_25X)
+                    .offset(y = eventIndicatorOffset)
                     .size(eventIndicatorSize)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
+                    .background(MaterialTheme.colorScheme.outline),
             )
         }
     }

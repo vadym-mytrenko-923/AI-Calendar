@@ -73,7 +73,9 @@ val circleRadius = 1000.dp
 val iconButtonRadius = 20.dp
 
 // Calendar
+val calendarDayCellSize = 36.dp
 val eventIndicatorSize = 4.dp
+val eventIndicatorOffset = 22.dp
 val eventAccentStripWidth = 4.dp
 val eventAccentStripRadius = 2.dp
 val calendarCardElevation = 1.dp

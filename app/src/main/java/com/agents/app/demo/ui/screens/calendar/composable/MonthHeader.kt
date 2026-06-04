@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.agents.app.demo.R
 import com.agents.app.demo.ui.theme.AiAgenticAppTheme
 import com.agents.app.demo.ui.theme.AppIcons
+import com.agents.app.demo.ui.theme.appColorsScheme
 import com.agents.app.demo.ui.theme.borderWidthDefault
 import com.agents.app.demo.ui.theme.defaultIconSize
 import com.agents.app.demo.ui.theme.marginPrimary2X
@@ -63,11 +64,12 @@ fun MonthHeader(
         ) {
             OutlinedButton(
                 onClick = onTodayClicked,
-                border = BorderStroke(borderWidthDefault, MaterialTheme.colorScheme.outline),
+                border = BorderStroke(borderWidthDefault, MaterialTheme.appColorsScheme.calendarTodayAccent),
             ) {
                 Text(
                     text = stringResource(R.string.calendarTodayBtn),
                     style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.appColorsScheme.calendarTodayAccent,
                 )
             }
         }

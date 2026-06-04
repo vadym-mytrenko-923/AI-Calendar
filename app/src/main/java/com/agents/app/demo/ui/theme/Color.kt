@@ -54,6 +54,9 @@ object AppColorsLight {
     // Icons
     val IconOnDark = Color(0xFFFFFFFFF)
 
+    // Calendar
+    val CalendarTodayAccent = Color(0xFFE91E63)
+
     // Misc
     val CardShadow = Color(0x0F000000)
 }
@@ -66,6 +69,9 @@ object AppColorsDark {
     // Primary
     val Primary = Color(0xFF36883A)
     val PrimaryDark = Color(0xFF216B26)
+
+    // Calendar
+    val CalendarTodayAccent = Color(0xFFFF4081)
 
     // Backgrounds & Surfaces
     val Background = Color(0xFF494949)
@@ -114,4 +120,5 @@ data class AppColorsScheme(
     val iconPrimary: Color = Color.Unspecified,
     val iconOnDark: Color = Color.Unspecified,
     val cardShadow: Color = Color.Unspecified,
+    val calendarTodayAccent: Color = Color.Unspecified,
 )
