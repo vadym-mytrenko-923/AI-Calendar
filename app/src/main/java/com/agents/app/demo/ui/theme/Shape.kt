@@ -18,3 +18,6 @@ val bottomSheetShapeDefault = RoundedCornerShape(
 val buttonShapeDefault = RoundedCornerShape(size = btnCornerRadius)
 val textFieldShapeDefault = RoundedCornerShape(size = inputRadius)
 val alertShapeDefault = RoundedCornerShape(size = alertContainerRadius)
+
+// Calendar
+val eventAccentStripShape = RoundedCornerShape(size = eventAccentStripRadius)

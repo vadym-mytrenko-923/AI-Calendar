@@ -71,3 +71,11 @@ val mediumRadius = 24.dp
 val smallestRadius = 4.dp
 val circleRadius = 1000.dp
 val iconButtonRadius = 20.dp
+
+// Calendar
+val eventIndicatorSize = 4.dp
+val eventAccentStripWidth = 4.dp
+val eventAccentStripRadius = 2.dp
+val calendarCardElevation = 1.dp
+val eventCardElevation = 0.5.dp
+val calendarToolbarHeight = 56.dp
