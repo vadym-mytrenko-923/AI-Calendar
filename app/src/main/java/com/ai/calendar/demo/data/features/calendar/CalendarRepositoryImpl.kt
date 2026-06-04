@@ -37,6 +37,8 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getEventsList(): List<CalendarEvent> = cachedEvents
+
     override fun setDateRange(range: DateRange) {
         currentDateRangeFlow.value = range
     }
