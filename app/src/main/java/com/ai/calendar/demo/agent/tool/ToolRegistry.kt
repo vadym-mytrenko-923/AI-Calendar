@@ -20,6 +20,6 @@ class ToolRegistry @Inject constructor(
     private fun LlmAgentTool.toFunctionDeclaration(): FunctionDeclaration = FunctionDeclaration(
         name = name,
         description = description,
-        parameters = emptyMap(),
+        parameters = parameters,
     )
 }

@@ -2,6 +2,7 @@ package com.ai.calendar.demo.di.ai
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
 import com.ai.calendar.demo.agent.client.FirebaseLlmClient
+import com.ai.calendar.demo.agent.tool.CreateEventTool
 import com.ai.calendar.demo.agent.tool.FindNearestEventTool
 import com.ai.calendar.demo.agent.tool.ListEventsTool
 import com.ai.calendar.demo.domain.features.ai.LlmClient
@@ -26,4 +27,8 @@ class AiModule {
     @Provides
     @IntoSet
     fun provideFindNearestEventTool(tool: FindNearestEventTool): LlmAgentTool = tool
+
+    @Provides
+    @IntoSet
+    fun provideCreateEventTool(tool: CreateEventTool): LlmAgentTool = tool
 }
