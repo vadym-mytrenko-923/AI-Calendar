@@ -5,10 +5,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private const val SELECTED_DAY_PATTERN = "EEEE, d MMMM"
+private const val FULL_DATE_PATTERN = "EEEE, MMMM d, yyyy"
 
-class SelectedDayFormatter : DateFormatter {
-    private val formatter = DateTimeFormatter.ofPattern(SELECTED_DAY_PATTERN, Locale.getDefault())
+class FullDateFormatter : DateFormatter {
+    private val formatter = DateTimeFormatter.ofPattern(FULL_DATE_PATTERN, Locale.getDefault())
 
     override fun format(date: LocalDate): String = date.format(formatter)
 }

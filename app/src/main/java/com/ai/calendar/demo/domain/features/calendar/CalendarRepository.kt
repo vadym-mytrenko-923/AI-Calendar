@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CalendarRepository {
     val eventsFlow: Flow<List<CalendarEvent>>
+    suspend fun getEventsList(): List<CalendarEvent>
     fun setDateRange(range: DateRange)
     suspend fun getEventById(id: Long): CalendarEvent?
     suspend fun createEvent(event: CalendarEvent): Long

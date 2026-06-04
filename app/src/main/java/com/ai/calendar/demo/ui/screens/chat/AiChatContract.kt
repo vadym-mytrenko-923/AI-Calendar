@@ -16,6 +16,7 @@ data class AiChatState(
 sealed interface AiChatIntent {
     data class InputChanged(val text: String) : AiChatIntent
     data object SendClicked : AiChatIntent
+    data object Reset : AiChatIntent
 }
 
 sealed interface AiChatEffect

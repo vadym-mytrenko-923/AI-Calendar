@@ -6,11 +6,14 @@ import com.ai.calendar.demo.data.features.calendar.CalendarRepositoryImpl
 import com.ai.calendar.demo.data.features.calendar.local.CalendarLocalDataSource
 import com.ai.calendar.demo.data.features.calendar.local.CalendarProviderDataSource
 import com.ai.calendar.demo.domain.features.calendar.CalendarRepository
-import com.ai.calendar.demo.ui.screens.calendar.utils.DateFormatter
 import com.ai.calendar.demo.ui.screens.calendar.utils.EditorDateFormatter
+import com.ai.calendar.demo.ui.screens.calendar.utils.EventDateTimeFormatter
 import com.ai.calendar.demo.ui.screens.calendar.utils.EventTimeFormatter
+import com.ai.calendar.demo.ui.screens.calendar.utils.FullDateFormatter
 import com.ai.calendar.demo.ui.screens.calendar.utils.SelectedDayFormatter
-import com.ai.calendar.demo.ui.screens.calendar.utils.TimeFormatter
+import com.ai.calendar.demo.utils.date.DateFormatter
+import com.ai.calendar.demo.utils.datetime.DateTimeFormatter
+import com.ai.calendar.demo.utils.time.TimeFormatter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +24,7 @@ import javax.inject.Singleton
 
 const val CALENDAR_SELECTED_DAY_FORMATTER = "calendarSelectedDayFormatter"
 const val CALENDAR_EDITOR_DATE_FORMATTER = "calendarEditorDateFormatter"
+const val CALENDAR_FULL_DATE_FORMATTER = "calendarFullDateFormatter"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -52,4 +56,13 @@ class CalendarModule {
     @Provides
     @Singleton
     fun provideTimeFormatter(): TimeFormatter = EventTimeFormatter()
+
+    @Provides
+    @Singleton
+    fun provideEventDateTimeFormatter(): DateTimeFormatter = EventDateTimeFormatter()
+
+    @Provides
+    @Singleton
+    @Named(CALENDAR_FULL_DATE_FORMATTER)
+    fun provideFullDateFormatter(): DateFormatter = FullDateFormatter()
 }

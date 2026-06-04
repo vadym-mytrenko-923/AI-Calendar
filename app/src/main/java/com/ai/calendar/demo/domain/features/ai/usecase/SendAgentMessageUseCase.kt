@@ -7,9 +7,10 @@ import dagger.Reusable
 import javax.inject.Inject
 
 @Reusable
-class SendAiMessageUseCase @Inject constructor(
+class SendAgentMessageUseCase @Inject constructor(
     private val llmClient: LlmClient,
 ) : BaseUseCase<String, Result<String>>() {
+
     override suspend fun execute(parameters: String): Result<String> = useResultWrapper {
         llmClient.sendMessage(parameters)
     }
