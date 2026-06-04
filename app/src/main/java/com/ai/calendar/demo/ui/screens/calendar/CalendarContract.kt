@@ -17,6 +17,7 @@ data class CalendarScreenState(
     val isLoading: Boolean = false,
     val hasPermission: Boolean = false,
     val isAddEditBottomSheetVisible: Boolean = false,
+    val isAiChatBottomSheetVisible: Boolean = false,
 ) : Parcelable {
     val isToday: Boolean
         get() = selectedDate == LocalDate.now() && currentMonth == YearMonth.now()
@@ -34,6 +35,8 @@ sealed interface CalendarIntent {
     data object AddFabClicked : CalendarIntent
     data class EventClicked(val event: CalendarEventUiModel) : CalendarIntent
     data object AddEditBottomSheetDismissed : CalendarIntent
+    data object AiChatFabClicked : CalendarIntent
+    data object AiChatBottomSheetDismissed : CalendarIntent
 }
 
 sealed interface CalendarEffect

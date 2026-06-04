@@ -81,3 +81,7 @@ val eventAccentStripRadius = 2.dp
 val calendarCardElevation = 1.dp
 val eventCardElevation = 0.5.dp
 val calendarToolbarHeight = 56.dp
+
+// Chat
+val chatBubbleMaxWidth = 280.dp
+val chatMinHeight = 120.dp

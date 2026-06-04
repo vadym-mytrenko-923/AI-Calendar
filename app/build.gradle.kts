@@ -13,6 +13,9 @@ plugins {
 
     // DI
     alias(libs.plugins.hilt.android)
+
+    // Firebase
+    alias(libs.plugins.google.services)
 }
 
 val VERSION_BUILD = 1
@@ -148,6 +151,10 @@ dependencies {
 
     // Logs
     implementation(libs.timber)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
 
     detektPlugins(libs.detektFormatting)
 

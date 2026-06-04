@@ -3,6 +3,7 @@ package com.ai.calendar.demo.ui.screens.calendar
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,9 +11,11 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,13 +28,18 @@ import com.ai.calendar.demo.ui.screens.calendar.addedit.AddEditEventIntent
 import com.ai.calendar.demo.ui.screens.calendar.addedit.AddEditEventState
 import com.ai.calendar.demo.ui.screens.calendar.composable.CalendarContent
 import com.ai.calendar.demo.ui.screens.calendar.composable.preview.CalendarPreviewData
+import com.ai.calendar.demo.ui.screens.chat.AiChatIntent
+import com.ai.calendar.demo.ui.screens.chat.AiChatState
+import com.ai.calendar.demo.ui.screens.chat.composable.AiChatBottomSheet
 import com.ai.calendar.demo.ui.theme.AiCalendarTheme
 import com.ai.calendar.demo.ui.theme.AppIcons
+import com.ai.calendar.demo.ui.theme.marginPrimary
 
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
     val state by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val addEditState by viewModel.addEditEventSvm.uiStateFlow.collectAsStateWithLifecycle()
+    val aiChatState by viewModel.aiChatSvm.uiStateFlow.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -48,8 +56,10 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
     CalendarScreenContent(
         state = state,
         addEditEventState = addEditState,
+        aiChatState = aiChatState,
         onUserIntent = viewModel::onUserIntent,
-        onAddEditEventUserIntent = viewModel.addEditEventSvm::onUserIntent
+        onAddEditEventUserIntent = viewModel.addEditEventSvm::onUserIntent,
+        onAiChatUserIntent = viewModel.aiChatSvm::onUserIntent,
     )
 }
 
@@ -57,22 +67,40 @@ fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
 private fun CalendarScreenContent(
     state: CalendarScreenState,
     addEditEventState: AddEditEventState,
+    aiChatState: AiChatState,
     onUserIntent: (CalendarIntent) -> Unit,
-    onAddEditEventUserIntent: (AddEditEventIntent) -> Unit
+    onAddEditEventUserIntent: (AddEditEventIntent) -> Unit,
+    onAiChatUserIntent: (AiChatIntent) -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             if (state.hasPermission) {
-                FloatingActionButton(
-                    onClick = { onUserIntent(CalendarIntent.AddFabClicked) },
-                    containerColor = MaterialTheme.colorScheme.primary,
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(marginPrimary),
                 ) {
-                    Icon(
-                        painter = painterResource(AppIcons.Add),
-                        contentDescription = stringResource(R.string.editorFabContentDescription),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                    )
+                    SmallFloatingActionButton(
+                        onClick = { onUserIntent(CalendarIntent.AiChatFabClicked) },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                        Icon(
+                            painter = painterResource(AppIcons.MagicWand),
+                            contentDescription = stringResource(R.string.aiChatFabDescription),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+
+                    FloatingActionButton(
+                        onClick = { onUserIntent(CalendarIntent.AddFabClicked) },
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ) {
+                        Icon(
+                            painter = painterResource(AppIcons.Add),
+                            contentDescription = stringResource(R.string.editorFabContentDescription),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
                 }
             }
         },
@@ -82,7 +110,7 @@ private fun CalendarScreenContent(
                 .fillMaxSize()
                 .padding(
                     top = scaffoldPadding.calculateTopPadding(),
-                    bottom = scaffoldPadding.calculateBottomPadding()
+                    bottom = scaffoldPadding.calculateBottomPadding(),
                 ),
         ) {
             CalendarContent(
@@ -98,6 +126,15 @@ private fun CalendarScreenContent(
                 state = addEditEventState,
                 onIntent = onAddEditEventUserIntent,
                 onDismiss = { onUserIntent(CalendarIntent.AddEditBottomSheetDismissed) },
+            )
+        }
+
+        if (state.isAiChatBottomSheetVisible) {
+            AiChatBottomSheet(
+                bottomPadding = scaffoldPadding.calculateBottomPadding(),
+                state = aiChatState,
+                onIntent = onAiChatUserIntent,
+                onDismiss = { onUserIntent(CalendarIntent.AiChatBottomSheetDismissed) },
             )
         }
     }

@@ -13,6 +13,7 @@ import com.ai.calendar.demo.ui.screens.calendar.addedit.AddEditEventSvm
 import com.ai.calendar.demo.ui.screens.calendar.mapper.CalendarEventUiMapper
 import com.ai.calendar.demo.ui.screens.calendar.mapper.MonthGridBuilder
 import com.ai.calendar.demo.ui.screens.calendar.utils.DateFormatter
+import com.ai.calendar.demo.ui.screens.chat.AiChatSvm
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.YearMonth
@@ -30,10 +31,11 @@ class CalendarViewModel @Inject constructor(
     private val monthGridBuilder: MonthGridBuilder,
     @param:Named(CALENDAR_SELECTED_DAY_FORMATTER) private val selectedDayFormatter: DateFormatter,
     val addEditEventSvm: AddEditEventSvm,
+    val aiChatSvm: AiChatSvm,
 ) : BaseViewModel<CalendarScreenState, CalendarIntent, CalendarEffect>(
     initialState = CalendarScreenState(),
     savedStateHandle = savedStateHandle,
-    subViewModels = listOf(SubViewModelEntry(addEditEventSvm)),
+    subViewModels = listOf(SubViewModelEntry(addEditEventSvm), SubViewModelEntry(aiChatSvm)),
 ) {
     init {
         updateSelectedDate(LocalDate.now(), YearMonth.now())
@@ -73,6 +75,15 @@ class CalendarViewModel @Inject constructor(
 
             is CalendarIntent.AddEditBottomSheetDismissed -> {
                 updateUiState { it.copy(isAddEditBottomSheetVisible = false) }
+            }
+
+            is CalendarIntent.AiChatFabClicked -> {
+                aiChatSvm.resetState()
+                updateUiState { it.copy(isAiChatBottomSheetVisible = true) }
+            }
+
+            is CalendarIntent.AiChatBottomSheetDismissed -> {
+                updateUiState { it.copy(isAiChatBottomSheetVisible = false) }
             }
         }
     }
