@@ -55,6 +55,12 @@ class FirebaseLlmClient @Inject constructor(
             - Use friendly, conversational tone
             - When confirming actions, be brief: "Done! Created X at Y."
 
+            SCHEDULING RULES:
+            - When scheduling a new event, ALWAYS call find_free_slots_strategy first
+            - Then ALWAYS call list_events to get real event data — NEVER guess or assume the calendar is empty
+            - Only suggest times that do NOT overlap with any existing event
+            - Double-check every suggested slot against the actual events before presenting it
+
             EVENT CREATION RULES:
             - When naming events, use natural sentence-style names without quotes
             - Never create events in the past — suggest the next available time or tomorrow

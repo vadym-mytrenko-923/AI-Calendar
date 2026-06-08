@@ -1,6 +1,7 @@
 package com.ai.calendar.demo.agent.tool
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
+import com.ai.calendar.demo.agent.tool.mapper.toHumanReadableMaps
 import com.ai.calendar.demo.domain.features.calendar.usecase.GetCurrentMonthEventsUseCase
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -13,10 +14,10 @@ class ListEventsTool @Inject constructor(
     override val name: String = "list_events"
 
     override val description: String =
-        "Lists all calendar events for the current month. Returns event details as JSON."
+        "Lists all calendar events for the current month. Returns events with human-readable date/time fields."
 
     override suspend fun execute(args: Map<String, Any?>): String = getCurrentMonthEventsUseCase().fold(
-        onSuccess = { events -> gson.toJson(events) },
+        onSuccess = { events -> gson.toJson(events.toHumanReadableMaps()) },
         onFailure = { it.message.orEmpty() },
     )
 }
