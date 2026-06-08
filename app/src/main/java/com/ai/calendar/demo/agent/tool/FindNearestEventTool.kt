@@ -12,8 +12,7 @@ class FindNearestEventTool @Inject constructor(
 ) : LlmAgentTool {
     override val name: String = "find_nearest_event"
 
-    override val description: String =
-        "Finds the nearest upcoming event from the current time. Returns event with human-readable date/time fields."
+    override val description: String = "Find nearest upcoming event as JSON"
 
     override suspend fun execute(args: Map<String, Any?>): String = getUpcomingEventUseCase().fold(
         onSuccess = { event ->

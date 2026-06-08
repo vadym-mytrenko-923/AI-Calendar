@@ -4,6 +4,7 @@ import com.ai.calendar.demo.domain.features.ai.LlmClient
 import com.ai.calendar.demo.domain.features.ai.usecase.SendAgentMessageUseCase
 import com.ai.calendar.demo.ui.base.BaseSubViewModel
 import com.ai.calendar.demo.ui.screens.chat.model.ChatMessageUiModel
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class AiChatSvm @Inject constructor(
@@ -12,6 +13,8 @@ class AiChatSvm @Inject constructor(
 ) : BaseSubViewModel<AiChatState, AiChatIntent, AiChatEffect>(
     initialState = AiChatState(),
 ) {
+    private var messageJob: Job? = null
+
     override fun reduceIntent(intent: AiChatIntent) {
         when (intent) {
             is AiChatIntent.InputChanged -> updateUiState { it.copy(input = intent.text) }
@@ -33,7 +36,8 @@ class AiChatSvm @Inject constructor(
             )
         }
 
-        launchSvmScope {
+        messageJob?.cancel()
+        messageJob = launchSvmScope {
             sendAgentMessageUseCase(question)
                 .onSuccess { response ->
                     val aiMessage = ChatMessageUiModel(text = response, isUser = false)
@@ -61,6 +65,8 @@ class AiChatSvm @Inject constructor(
     }
 
     private fun reset() {
+        messageJob?.cancel()
+        messageJob = null
         llmClient.resetChat()
         updateUiState { AiChatState() }
     }

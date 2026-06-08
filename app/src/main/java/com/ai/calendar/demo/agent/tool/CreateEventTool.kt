@@ -1,9 +1,10 @@
 package com.ai.calendar.demo.agent.tool
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
+import com.ai.calendar.demo.agent.base.ParamType
+import com.ai.calendar.demo.agent.base.ToolParam
 import com.ai.calendar.demo.domain.features.calendar.model.CalendarEvent
 import com.ai.calendar.demo.domain.features.calendar.usecase.CreateEventUseCase
-import com.google.firebase.ai.type.Schema
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -17,14 +18,13 @@ class CreateEventTool @Inject constructor(
 ) : LlmAgentTool {
     override val name: String = "create_event"
 
-    override val description: String =
-        "Creates a new calendar event. Requires title, date (YYYY-MM-DD), start_time (HH:mm), and duration_minutes."
+    override val description: String = "Create calendar event"
 
-    override val parameters: Map<String, Schema> = mapOf(
-        "title" to Schema.string("The title of the event"),
-        "date" to Schema.string("The date of the event in YYYY-MM-DD format"),
-        "start_time" to Schema.string("The start time in HH:mm format (24-hour)"),
-        "duration_minutes" to Schema.integer("Duration of the event in minutes"),
+    override val parameters: List<ToolParam> = listOf(
+        ToolParam("title", ParamType.STRING, "The title of the event"),
+        ToolParam("date", ParamType.STRING, "The date in YYYY-MM-DD format"),
+        ToolParam("start_time", ParamType.STRING, "The start time in HH:mm format (24-hour)"),
+        ToolParam("duration_minutes", ParamType.INTEGER, "Duration in minutes"),
     )
 
     @Suppress("ReturnCount")

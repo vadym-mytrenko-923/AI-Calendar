@@ -1,7 +1,7 @@
 package com.ai.calendar.demo.di.ai
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
-import com.ai.calendar.demo.agent.client.FirebaseLlmClient
+import com.ai.calendar.demo.agent.client.LocalLlmClient
 import com.ai.calendar.demo.agent.tool.CreateEventTool
 import com.ai.calendar.demo.agent.tool.FindFreeSlotsTool
 import com.ai.calendar.demo.agent.tool.FindNearestEventTool
@@ -17,9 +17,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AiModule {
+
     @Provides
     @Singleton
-    fun provideLlmClient(impl: FirebaseLlmClient): LlmClient = impl
+    fun provideLlmClient(impl: LocalLlmClient): LlmClient = impl
 
     @Provides
     @IntoSet

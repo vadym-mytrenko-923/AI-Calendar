@@ -13,8 +13,7 @@ class ListEventsTool @Inject constructor(
 
     override val name: String = "list_events"
 
-    override val description: String =
-        "Lists all calendar events for the current month. Returns events with human-readable date/time fields."
+    override val description: String = "List current month events as JSON"
 
     override suspend fun execute(args: Map<String, Any?>): String = getCurrentMonthEventsUseCase().fold(
         onSuccess = { events -> gson.toJson(events.toHumanReadableMaps()) },
