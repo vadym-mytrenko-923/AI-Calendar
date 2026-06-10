@@ -1,5 +1,6 @@
 package com.ai.calendar.demo.ui.screens.chat.composable
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,6 +70,25 @@ fun AiChatContent(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Black,
         )
+
+        AnimatedVisibility(visible = state.isDownloading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = marginPrimary2X, vertical = marginPrimary),
+            ) {
+                Text(
+                    text = stringResource(R.string.aiChatDownloadingModel, state.downloadProgress ?: 0),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(marginPrimary))
+                LinearProgressIndicator(
+                    progress = { (state.downloadProgress ?: 0) / 100f },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(marginPrimary2X))
 

@@ -3,6 +3,7 @@ package com.ai.calendar.demo.ui.screens.chat.composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import com.ai.calendar.demo.ui.theme.chatBubbleMaxWidth
 import com.ai.calendar.demo.ui.theme.containerShapeSmall
 import com.ai.calendar.demo.ui.theme.marginPrimary
 import com.ai.calendar.demo.ui.theme.marginPrimary1_5X
+import com.ai.calendar.demo.ui.theme.marginPrimaryHalf
 
 @Composable
 fun ChatBubble(
@@ -39,21 +41,39 @@ fun ChatBubble(
 
     val alignment = if (message.isUser) Arrangement.End else Arrangement.Start
 
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = alignment,
+        horizontalAlignment = if (message.isUser) {
+            androidx.compose.ui.Alignment.End
+        } else {
+            androidx.compose.ui.Alignment.Start
+        },
     ) {
-        Box(
-            modifier = Modifier
-                .widthIn(max = chatBubbleMaxWidth)
-                .clip(containerShapeSmall)
-                .background(backgroundColor)
-                .padding(horizontal = marginPrimary1_5X, vertical = marginPrimary),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = alignment,
         ) {
+            Box(
+                modifier = Modifier
+                    .widthIn(max = chatBubbleMaxWidth)
+                    .clip(containerShapeSmall)
+                    .background(backgroundColor)
+                    .padding(horizontal = marginPrimary1_5X, vertical = marginPrimary),
+            ) {
+                Text(
+                    text = message.text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = textColor,
+                )
+            }
+        }
+
+        if (message.executionTime.isNotEmpty()) {
             Text(
-                text = message.text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = textColor,
+                modifier = Modifier.padding(top = marginPrimaryHalf),
+                text = message.executionTime,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             )
         }
     }
@@ -71,6 +91,12 @@ private fun ChatBubbleUserPreview() {
 @Composable
 private fun ChatBubbleAiPreview() {
     AiCalendarTheme {
-        ChatBubble(message = ChatMessageUiModel("Hi! How can I help you?", isUser = false))
+        ChatBubble(
+            message = ChatMessageUiModel(
+                text = "Hi! How can I help you?",
+                isUser = false,
+                executionTime = "21.8s",
+            ),
+        )
     }
 }

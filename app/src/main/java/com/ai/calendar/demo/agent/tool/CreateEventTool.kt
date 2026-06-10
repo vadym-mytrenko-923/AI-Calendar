@@ -3,6 +3,7 @@ package com.ai.calendar.demo.agent.tool
 import com.ai.calendar.demo.agent.base.LlmAgentTool
 import com.ai.calendar.demo.agent.base.ParamType
 import com.ai.calendar.demo.agent.base.ToolParam
+import com.ai.calendar.demo.domain.base.logger.Logger
 import com.ai.calendar.demo.domain.features.calendar.model.CalendarEvent
 import com.ai.calendar.demo.domain.features.calendar.usecase.CreateEventUseCase
 import java.time.LocalDate
@@ -10,11 +11,13 @@ import java.time.LocalTime
 import java.time.ZoneId
 import javax.inject.Inject
 
+private const val TAG = "CreateEventTool"
 private const val DEFAULT_DURATION = 60
 private const val MILLIS_PER_MINUTE = 60_000L
 
 class CreateEventTool @Inject constructor(
     private val createEventUseCase: CreateEventUseCase,
+    private val logger: Logger,
 ) : LlmAgentTool {
     override val name: String = "create_event"
 
@@ -58,8 +61,14 @@ class CreateEventTool @Inject constructor(
         )
 
         return createEventUseCase(event).fold(
-            onSuccess = { id -> "Event '$title' created successfully with id=$id." },
-            onFailure = { "Error creating event: ${it.message ?: it::class.simpleName}" },
+            onSuccess = {
+                logger.log("$TAG: created '$title' on $dateStr at $startTimeStr")
+                "Event '$title' on $dateStr at $startTimeStr created successfully."
+            },
+            onFailure = { error ->
+                logger.logException(error)
+                "Error creating event: ${error.message ?: error::class.simpleName}"
+            },
         )
     }
 }

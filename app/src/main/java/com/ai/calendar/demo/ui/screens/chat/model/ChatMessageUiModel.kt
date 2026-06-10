@@ -7,4 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class ChatMessageUiModel(
     val text: String,
     val isUser: Boolean,
+    val executionTime: String = "",
 ) : Parcelable

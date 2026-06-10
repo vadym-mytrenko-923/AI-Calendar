@@ -24,6 +24,7 @@ tink = "1.21.0"
 splashScreen = "1.2.0"
 detekt = "1.23.8"
 litertLm = "0.13.1"
+llamatik = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,7 @@ android-tink = { group = "com.google.crypto.tink", name = "tink-android", versio
 androidx-core-splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 litert-lm = { group = "com.google.ai.edge.litertlm", name = "litertlm-android", version.ref = "litertLm" }
+llamatik = { group = "com.llamatik", name = "library", version.ref = "llamatik" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

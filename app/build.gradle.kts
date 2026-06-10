@@ -100,7 +100,7 @@ android {
         buildConfig = true
     }
     androidResources {
-        noCompress += "litertlm"
+        noCompress += listOf("litertlm", "gguf")
     }
 }
 
@@ -154,6 +154,7 @@ dependencies {
 
     // On-device LLM
     implementation(libs.litert.lm)
+    implementation(libs.llamatik)
 
     detektPlugins(libs.detektFormatting)
 
