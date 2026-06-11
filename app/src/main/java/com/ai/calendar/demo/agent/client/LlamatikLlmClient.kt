@@ -8,7 +8,6 @@ import com.llamatik.library.platform.LlamaBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -30,7 +29,7 @@ class LlamatikLlmClient @Inject constructor(
 
     @Suppress("NestedBlockDepth")
     override suspend fun sendMessage(prompt: String): String = withContext(Dispatchers.IO) {
-        Timber.tag(TAG).d(">>> sendMessage: '%s'", prompt)
+        logger.log("$TAG: >>> sendMessage: '$prompt'")
         val startTime = System.currentTimeMillis()
 
         if (!ensureModelLoaded()) {
@@ -40,7 +39,7 @@ class LlamatikLlmClient @Inject constructor(
         history.add("user" to prompt)
 
         repeat(MAX_ROUNDS) { round ->
-            Timber.tag(TAG).d("[ROUND %d] history=%d turns", round + 1, history.size)
+            logger.log("$TAG: [ROUND ${round + 1}] history=${history.size} turns")
             val response = generateFromHistory()
 
             val toolCall = extractToolCall(response)
@@ -48,21 +47,21 @@ class LlamatikLlmClient @Inject constructor(
                 val cleaned = cleanResponse(response)
                 val result = cleaned.ifBlank { FALLBACK_RESPONSE }
                 history.add("assistant" to result)
-                Timber.tag(TAG).d("<<< TEXT (%dms): %s", System.currentTimeMillis() - startTime, result)
+                logger.log("$TAG: <<< TEXT (${System.currentTimeMillis() - startTime}ms): $result")
                 return@withContext result
             }
 
-            Timber.tag(TAG).d("[TOOL] %s(%s)", toolCall.name, toolCall.args)
+            logger.log("$TAG: [TOOL] ${toolCall.name}(${toolCall.args})")
             val toolResult = toolRegistry.executeTool(toolCall.name, toolCall.args)
 
             if (!toolResult.startsWith("Error")) {
                 val result = formatSuccessResponse(toolCall.name, toolResult)
                 history.add("assistant" to result)
-                Timber.tag(TAG).d("<<< SUCCESS (%dms): %s", System.currentTimeMillis() - startTime, result)
+                logger.log("$TAG: <<< SUCCESS (${System.currentTimeMillis() - startTime}ms): $result")
                 return@withContext result
             }
 
-            Timber.tag(TAG).d("[ERROR] %s", toolResult)
+            logger.log("$TAG: [ERROR] $toolResult")
             history.add("assistant" to "TOOL_CALL failed: $toolResult")
             history.add("user" to "The tool returned an error: $toolResult. Please ask me for the missing info.")
         }
@@ -110,7 +109,7 @@ class LlamatikLlmClient @Inject constructor(
 
         val start = System.currentTimeMillis()
         val response = LlamaBridge.generate(prompt)
-        Timber.tag(TAG).d("[RESPONSE] (%dms) %s", System.currentTimeMillis() - start, response)
+        logger.log("$TAG: [RESPONSE] (${System.currentTimeMillis() - start}ms) $response")
         return response
     }
 
