@@ -24,6 +24,10 @@ local.properties
 /app/**/release/
 /app/**/debug/
 
+# ML Models
+*.litertlm
+*.gguf
+
 # Applications
 *.apk
 *.aab

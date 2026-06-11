@@ -1,30 +1,46 @@
 package com.ai.calendar.demo.agent.tool
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
+import com.ai.calendar.demo.agent.base.ParamType
+import com.ai.calendar.demo.agent.base.ToolParam
+import com.ai.calendar.demo.domain.base.logger.Logger
 import com.ai.calendar.demo.domain.features.calendar.model.CalendarEvent
 import com.ai.calendar.demo.domain.features.calendar.usecase.CreateEventUseCase
-import com.google.firebase.ai.type.Schema
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import javax.inject.Inject
 
+private const val TAG = "CreateEventTool"
 private const val DEFAULT_DURATION = 60
 private const val MILLIS_PER_MINUTE = 60_000L
 
 class CreateEventTool @Inject constructor(
     private val createEventUseCase: CreateEventUseCase,
+    private val logger: Logger,
 ) : LlmAgentTool {
     override val name: String = "create_event"
 
     override val description: String =
-        "Creates a new calendar event. Requires title, date (YYYY-MM-DD), start_time (HH:mm), and duration_minutes."
+        "Create a calendar event. Only call when user provides title, date, time, and duration."
 
-    override val parameters: Map<String, Schema> = mapOf(
-        "title" to Schema.string("The title of the event"),
-        "date" to Schema.string("The date of the event in YYYY-MM-DD format"),
-        "start_time" to Schema.string("The start time in HH:mm format (24-hour)"),
-        "duration_minutes" to Schema.integer("Duration of the event in minutes"),
+    override val parameters: List<ToolParam> = listOf(
+        ToolParam("title", ParamType.STRING, "Event title as stated by the user"),
+        ToolParam(
+            "date",
+            ParamType.STRING,
+            "Date in YYYY-MM-DD. today=${LocalDate.now()}, tomorrow=${LocalDate.now().plusDays(1)}",
+        ),
+        ToolParam(
+            "start_time",
+            ParamType.STRING,
+            "Start time in HH:mm 24h format. noon=12:00, 1pm=13:00, 2pm=14:00, 5pm=17:00, 9pm=21:00",
+        ),
+        ToolParam(
+            "duration_minutes",
+            ParamType.INTEGER,
+            "Duration in minutes as stated by the user",
+        ),
     )
 
     @Suppress("ReturnCount")
@@ -58,8 +74,14 @@ class CreateEventTool @Inject constructor(
         )
 
         return createEventUseCase(event).fold(
-            onSuccess = { id -> "Event '$title' created successfully with id=$id." },
-            onFailure = { "Error creating event: ${it.message ?: it::class.simpleName}" },
+            onSuccess = {
+                logger.log("$TAG: created '$title' on $dateStr at $startTimeStr")
+                "Event '$title' on $dateStr at $startTimeStr created successfully."
+            },
+            onFailure = { error ->
+                logger.logException(error)
+                "Error creating event: ${error.message ?: error::class.simpleName}"
+            },
         )
     }
 }

@@ -37,7 +37,21 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getEventsList(): List<CalendarEvent> = cachedEvents
+    override suspend fun getEventsList(): List<CalendarEvent> {
+        if (cachedEvents.isEmpty()) {
+            val range = currentDateRangeFlow.value ?: currentMonthRange()
+            cachedEvents = localDataSource.getEventsList(range)
+        }
+        return cachedEvents
+    }
+
+    private fun currentMonthRange(): DateRange {
+        val zone = java.time.ZoneId.systemDefault()
+        val now = java.time.YearMonth.now()
+        val start = now.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
+        val end = now.atEndOfMonth().plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+        return DateRange(startMillis = start, endMillis = end)
+    }
 
     override fun setDateRange(range: DateRange) {
         currentDateRangeFlow.value = range

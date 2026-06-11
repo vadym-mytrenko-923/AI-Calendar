@@ -9,8 +9,10 @@ data class AiChatState(
     val input: String = "",
     val messages: List<ChatMessageUiModel> = emptyList(),
     val isLoading: Boolean = false,
+    val downloadProgress: Int? = null,
 ) : Parcelable {
     val isSendButtonEnabled: Boolean get() = input.isNotBlank() && !isLoading
+    val isDownloading: Boolean get() = downloadProgress != null
 }
 
 sealed interface AiChatIntent {

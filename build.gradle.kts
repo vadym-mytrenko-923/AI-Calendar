@@ -12,9 +12,6 @@ plugins {
 
     // DI
     alias(libs.plugins.hilt.android) apply false
-
-    // Firebase
-    alias(libs.plugins.google.services) apply false
 }
 
 val execHookTask = tasks.register("markGitHookExecutable", Exec::class) {

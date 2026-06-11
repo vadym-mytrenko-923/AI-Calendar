@@ -1,9 +1,11 @@
 package com.ai.calendar.demo.di.ai
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
-import com.ai.calendar.demo.agent.client.FirebaseLlmClient
+import com.ai.calendar.demo.agent.client.LlamatikLlmClient
+import com.ai.calendar.demo.agent.client.LlmResponseParser
+import com.ai.calendar.demo.agent.client.ToolCallParser
+import com.ai.calendar.demo.agent.model.GenerationConfig
 import com.ai.calendar.demo.agent.tool.CreateEventTool
-import com.ai.calendar.demo.agent.tool.FindFreeSlotsTool
 import com.ai.calendar.demo.agent.tool.FindNearestEventTool
 import com.ai.calendar.demo.agent.tool.ListEventsTool
 import com.ai.calendar.demo.domain.features.ai.LlmClient
@@ -17,9 +19,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AiModule {
+
     @Provides
     @Singleton
-    fun provideLlmClient(impl: FirebaseLlmClient): LlmClient = impl
+    fun provideGenerationConfig(): GenerationConfig = GenerationConfig()
+
+    @Provides
+    @Singleton
+    fun provideToolCallParser(impl: LlmResponseParser): ToolCallParser = impl
+
+    @Provides
+    @Singleton
+    fun provideLlmClient(impl: LlamatikLlmClient): LlmClient = impl
 
     @Provides
     @IntoSet
@@ -32,8 +43,4 @@ class AiModule {
     @Provides
     @IntoSet
     fun provideCreateEventTool(tool: CreateEventTool): LlmAgentTool = tool
-
-    @Provides
-    @IntoSet
-    fun provideFindFreeSlotsTool(tool: FindFreeSlotsTool): LlmAgentTool = tool
 }

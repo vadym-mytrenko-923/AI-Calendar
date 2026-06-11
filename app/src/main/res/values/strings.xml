@@ -59,6 +59,7 @@
     <string name="aiChatPromptPlaceholder">Ask me anything…</string>
     <string name="aiChatBtnSend">Send</string>
     <string name="aiChatEmptyState">No messages yet. Ask me anything!</string>
+    <string name="aiChatDownloadingModel">Downloading AI model… %1$d%%</string>
     <string name="mainBniProducts">Products</string>
     <string name="mainBniSettings">Settings</string>
 

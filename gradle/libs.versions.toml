@@ -23,8 +23,8 @@ dataStore = "1.2.1"
 tink = "1.21.0"
 splashScreen = "1.2.0"
 detekt = "1.23.8"
-firebaseBom = "33.15.0"
-googleServices = "4.4.2"
+litertLm = "0.13.1"
+llamatik = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,8 +63,8 @@ data-store = { group = "androidx.datastore", name = "datastore-preferences", ver
 android-tink = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink" }
 androidx-core-splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-ai = { group = "com.google.firebase", name = "firebase-ai" }
+litert-lm = { group = "com.google.ai.edge.litertlm", name = "litertlm-android", version.ref = "litertLm" }
+llamatik = { group = "com.llamatik", name = "library", version.ref = "llamatik" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -74,4 +74,3 @@ kotlin-android-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

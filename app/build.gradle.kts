@@ -13,9 +13,6 @@ plugins {
 
     // DI
     alias(libs.plugins.hilt.android)
-
-    // Firebase
-    alias(libs.plugins.google.services)
 }
 
 val VERSION_BUILD = 1
@@ -102,6 +99,9 @@ android {
         compose = true
         buildConfig = true
     }
+    androidResources {
+        noCompress += listOf("litertlm", "gguf")
+    }
 }
 
 dependencies {
@@ -152,9 +152,8 @@ dependencies {
     // Logs
     implementation(libs.timber)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.ai)
+    // On-device LLM
+    implementation(libs.llamatik)
 
     detektPlugins(libs.detektFormatting)
 
