@@ -14,11 +14,12 @@ private const val TAG = "LlamatikLlm"
 private const val MAX_ROUNDS = 5
 private const val FALLBACK_RESPONSE = "I'm not sure what you need. " +
     "I can list your events, find the nearest one, or create a new event."
-private const val ERROR_FEEDBACK = "The tool returned an error: %s. Please ask me for the missing info."
 
 class LlamatikLlmClient @Inject constructor(
     private val modelManager: LocalModelManager,
     private val toolRegistry: ToolRegistry,
+    private val promptBuilder: SystemPromptBuilder,
+    private val parser: ToolCallParser,
     private val generationConfig: GenerationConfig,
     private val logger: Logger,
 ) : LlmClient {
@@ -37,10 +38,10 @@ class LlamatikLlmClient @Inject constructor(
         repeat(MAX_ROUNDS) { round ->
             logger.log("$TAG: [ROUND ${round + 1}]")
             val response = generate()
-            val toolCall = extractToolCall(response, toolRegistry)
+            val toolCall = parser.parse(response)
 
             if (toolCall == null) {
-                val result = cleanLlmResponse(response).ifBlank { FALLBACK_RESPONSE }
+                val result = parser.cleanResponse(response).ifBlank { FALLBACK_RESPONSE }
                 history.add("assistant" to result)
                 logResult(startTime, result)
                 return@withContext result
@@ -48,20 +49,16 @@ class LlamatikLlmClient @Inject constructor(
 
             logger.log("$TAG: [TOOL] ${toolCall.name}(${toolCall.args})")
             val toolResult = toolRegistry.executeTool(toolCall.name, toolCall.args)
+            logger.log("$TAG: [RESULT] $toolResult")
 
-            if (!toolResult.startsWith("Error")) {
-                val result = formatSuccessResponse(toolCall.name, toolResult)
-                history.add("assistant" to result)
-                logResult(startTime, result)
-                return@withContext result
-            }
-
-            logger.log("$TAG: [ERROR] $toolResult")
-            history.add("assistant" to toolResult)
-            history.add("user" to ERROR_FEEDBACK.format(toolResult))
+            history.add("assistant" to "TOOL_CALL: ${toolCall.name}")
+            history.add("user" to "Tool result: $toolResult")
         }
 
-        FALLBACK_RESPONSE
+        val result = parser.cleanResponse(generate()).ifBlank { FALLBACK_RESPONSE }
+        history.add("assistant" to result)
+        logResult(startTime, result)
+        result
     }
 
     override fun resetChat() {
@@ -89,7 +86,7 @@ class LlamatikLlmClient @Inject constructor(
     }
 
     private fun generate(): String {
-        val messages = mutableListOf("system" to buildCalendarSystemPrompt(toolRegistry))
+        val messages = mutableListOf("system" to promptBuilder.build())
         messages.addAll(history)
 
         val prompt = LlamaBridge.applyChatTemplate(messages, addAssistantPrefix = true)

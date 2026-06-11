@@ -2,6 +2,8 @@ package com.ai.calendar.demo.di.ai
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
 import com.ai.calendar.demo.agent.client.LlamatikLlmClient
+import com.ai.calendar.demo.agent.client.LlmResponseParser
+import com.ai.calendar.demo.agent.client.ToolCallParser
 import com.ai.calendar.demo.agent.model.GenerationConfig
 import com.ai.calendar.demo.agent.tool.CreateEventTool
 import com.ai.calendar.demo.agent.tool.FindNearestEventTool
@@ -21,6 +23,10 @@ class AiModule {
     @Provides
     @Singleton
     fun provideGenerationConfig(): GenerationConfig = GenerationConfig()
+
+    @Provides
+    @Singleton
+    fun provideToolCallParser(impl: LlmResponseParser): ToolCallParser = impl
 
     @Provides
     @Singleton
