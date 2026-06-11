@@ -15,9 +15,6 @@ import javax.inject.Singleton
 
 private const val TAG = "ModelManager"
 private const val MODELS_DIR = "models"
-private const val MODEL_FILE_NAME = "hammer2.1-1.5b-q4_k_m.gguf"
-private const val MODEL_DOWNLOAD_URL =
-    "https://huggingface.co/mradermacher/Hammer2.1-1.5b-GGUF/resolve/main/Hammer2.1-1.5b.Q4_K_M.gguf"
 private const val DOWNLOAD_BUFFER_SIZE = 8192
 private const val PROGRESS_LOG_INTERVAL = 10
 
@@ -28,6 +25,9 @@ class LocalModelManager @Inject constructor(
 ) {
     private val _modelState = MutableStateFlow<ModelState>(ModelState.NotReady)
     val modelState: StateFlow<ModelState> = _modelState
+
+    var activeConfig: LlmModelConfig = LlmModelConfig.HAMMER_2_1_1_5B
+        private set
 
     fun getModelPath(): String? {
         val modelsDir = File(context.filesDir, MODELS_DIR)
@@ -40,7 +40,7 @@ class LocalModelManager @Inject constructor(
         if (_modelState.value is ModelState.Ready) return
         _modelState.value = ModelState.Loading
         withContext(Dispatchers.IO) {
-            val path = getModelPath() ?: downloadModel()
+            val path = getModelPath() ?: downloadModel(activeConfig)
             _modelState.value = if (path != null) {
                 logger.log("$TAG: model ready at $path")
                 ModelState.Ready(path)
@@ -51,19 +51,19 @@ class LocalModelManager @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
-    private fun downloadModel(): String? {
+    private fun downloadModel(config: LlmModelConfig): String? {
         val outDir = File(context.filesDir, MODELS_DIR)
         outDir.mkdirs()
-        val outFile = File(outDir, MODEL_FILE_NAME)
-        val tempFile = File(outDir, "$MODEL_FILE_NAME.tmp")
+        val outFile = File(outDir, config.fileName)
+        val tempFile = File(outDir, "${config.fileName}.tmp")
 
         if (outFile.exists() && outFile.length() > 0L) return outFile.absolutePath
 
-        logger.log("$TAG: downloading model...")
+        logger.log("$TAG: downloading ${config.name}...")
         _modelState.value = ModelState.Downloading(0)
 
         return try {
-            val connection = URL(MODEL_DOWNLOAD_URL).openConnection() as HttpURLConnection
+            val connection = URL(config.downloadUrl).openConnection() as HttpURLConnection
             connection.connectTimeout = 30_000
             connection.readTimeout = 30_000
             connection.connect()

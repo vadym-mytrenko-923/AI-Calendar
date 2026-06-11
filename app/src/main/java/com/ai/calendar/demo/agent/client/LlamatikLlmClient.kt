@@ -2,23 +2,19 @@ package com.ai.calendar.demo.agent.client
 
 import com.ai.calendar.demo.agent.model.LocalModelManager
 import com.ai.calendar.demo.agent.tool.ToolRegistry
-import com.ai.calendar.demo.di.calendar.CALENDAR_FULL_DATE_FORMATTER
 import com.ai.calendar.demo.domain.base.logger.Logger
 import com.ai.calendar.demo.domain.features.ai.LlmClient
-import com.ai.calendar.demo.utils.date.DateFormatter
-import com.ai.calendar.demo.utils.time.TimeFormatter
 import com.llamatik.library.platform.LlamaBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import timber.log.Timber
 import java.time.LocalDate
-import java.time.LocalTime
 import javax.inject.Inject
-import javax.inject.Named
 
 private const val TAG = "LlamatikLlm"
-private const val MAX_TOOL_ROUNDS = 3
-private const val MAX_TOKENS = 256
+private const val MAX_ROUNDS = 5
+private const val MAX_TOKENS = 128
 private const val CONTEXT_LENGTH = 4096
 private const val FALLBACK_RESPONSE = "I'm not sure what you need. " +
     "I can list your events, find the nearest one, or create a new event."
@@ -27,55 +23,59 @@ class LlamatikLlmClient @Inject constructor(
     private val modelManager: LocalModelManager,
     private val toolRegistry: ToolRegistry,
     private val logger: Logger,
-    @Named(CALENDAR_FULL_DATE_FORMATTER) private val fullDateFormatter: DateFormatter,
-    private val timeFormatter: TimeFormatter,
 ) : LlmClient {
 
     private var isModelLoaded = false
+    private val history = mutableListOf<Pair<String, String>>()
 
+    @Suppress("NestedBlockDepth")
     override suspend fun sendMessage(prompt: String): String = withContext(Dispatchers.IO) {
-        logger.log("$TAG: sendMessage prompt='$prompt'")
+        Timber.tag(TAG).d(">>> sendMessage: '%s'", prompt)
         val startTime = System.currentTimeMillis()
 
         if (!ensureModelLoaded()) {
             return@withContext "Model not available."
         }
 
-        val fullPrompt = buildPrompt(buildSystemPrompt(), prompt)
-        var response = generate(fullPrompt)
+        history.add("user" to prompt)
 
-        var lastToolName: String? = null
-        repeat(MAX_TOOL_ROUNDS) { round ->
+        repeat(MAX_ROUNDS) { round ->
+            Timber.tag(TAG).d("[ROUND %d] history=%d turns", round + 1, history.size)
+            val response = generateFromHistory()
+
             val toolCall = extractToolCall(response)
             if (toolCall == null) {
-                val totalMs = System.currentTimeMillis() - startTime
-                logger.log("$TAG: no tool call [round ${round + 1}], total=${totalMs}ms")
                 val cleaned = cleanResponse(response)
-                return@withContext cleaned.ifBlank { FALLBACK_RESPONSE }
+                val result = cleaned.ifBlank { FALLBACK_RESPONSE }
+                history.add("assistant" to result)
+                Timber.tag(TAG).d("<<< TEXT (%dms): %s", System.currentTimeMillis() - startTime, result)
+                return@withContext result
             }
 
-            if (toolCall.name == lastToolName) {
-                logger.log("$TAG: same tool '${toolCall.name}' repeated, breaking")
-                return@withContext cleanResponse(response)
-            }
-            lastToolName = toolCall.name
-
-            logger.log("$TAG: tool call [round ${round + 1}] name=${toolCall.name} args=${toolCall.args}")
+            Timber.tag(TAG).d("[TOOL] %s(%s)", toolCall.name, toolCall.args)
             val toolResult = toolRegistry.executeTool(toolCall.name, toolCall.args)
-            logger.log("$TAG: tool result=$toolResult")
 
-            val isError = toolResult.startsWith("Error")
-            response = generate(buildFollowUpPrompt(toolCall.name, toolResult, isError))
+            if (!toolResult.startsWith("Error")) {
+                val result = formatSuccessResponse(toolCall.name, toolResult)
+                history.add("assistant" to result)
+                Timber.tag(TAG).d("<<< SUCCESS (%dms): %s", System.currentTimeMillis() - startTime, result)
+                return@withContext result
+            }
+
+            Timber.tag(TAG).d("[ERROR] %s", toolResult)
+            history.add("assistant" to "TOOL_CALL failed: $toolResult")
+            history.add("user" to "The tool returned an error: $toolResult. Please ask me for the missing info.")
         }
 
-        val totalMs = System.currentTimeMillis() - startTime
-        logger.log("$TAG: complete, total=${totalMs}ms")
-        cleanResponse(response)
+        FALLBACK_RESPONSE
     }
 
     override fun resetChat() {
+        history.clear()
         LlamaBridge.sessionReset()
     }
+
+    // region Model loading
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun ensureModelLoaded(): Boolean {
@@ -96,7 +96,23 @@ class LlamatikLlmClient @Inject constructor(
         }
     }
 
-    private fun generate(prompt: String): String = LlamaBridge.generate(prompt)
+    private fun generateFromHistory(): String {
+        val messages = mutableListOf("system" to buildSystemPrompt())
+        messages.addAll(history)
+
+        val prompt = LlamaBridge.applyChatTemplate(messages, addAssistantPrefix = true)
+            ?: buildString {
+                messages.forEach { (role, content) ->
+                    append("<|im_start|>$role\n$content<|im_end|>\n")
+                }
+                append("<|im_start|>assistant\n")
+            }
+
+        val start = System.currentTimeMillis()
+        val response = LlamaBridge.generate(prompt)
+        Timber.tag(TAG).d("[RESPONSE] (%dms) %s", System.currentTimeMillis() - start, response)
+        return response
+    }
 
     private fun updateParams() {
         LlamaBridge.updateGenerateParams(
@@ -108,74 +124,122 @@ class LlamatikLlmClient @Inject constructor(
             maxTokens = MAX_TOKENS,
             topP = 0.9f,
             topK = 40,
-            repeatPenalty = 1.1f,
+            repeatPenalty = 1.3f,
             batchSize = 512,
             gpuLayers = 0,
         )
     }
 
+    // endregion
+
+    // region System prompt
+
     private fun buildSystemPrompt(): String {
-        val today = fullDateFormatter.format(LocalDate.now())
-        val time = timeFormatter.format(LocalTime.now())
+        val today = LocalDate.now()
+        val tomorrow = today.plusDays(1)
         val tools = toolRegistry.toHermesToolsBlock()
 
-        return "You are a calendar assistant. Today is $today, current time is $time.\n\n" +
+        return "You are a helpful calendar assistant.\n" +
+            "Today is $today. Tomorrow is $tomorrow.\n\n" +
             "You have access to the following tools:\n$tools\n\n" +
-            "RULES:\n" +
-            "- Before calling any tool, check that the user explicitly provided ALL required parameters. " +
-            "If ANY required parameter is missing or unclear, do NOT call the tool. " +
-            "Instead reply in plain text asking for the missing information.\n" +
-            "- Only tools with no required parameters can be called directly.\n\n" +
-            "When you call a tool, ONLY reply in this format:\n\n" +
-            "<tool_call>\n{\"name\": \"function_name\", \"arguments\": {\"param\": \"value\"}}\n</tool_call>"
+            "RESPONSE FORMAT (you MUST use one of these two prefixes):\n" +
+            "- TOOL_CALL: {\"name\": \"tool_name\", \"arguments\": {\"param\": \"value\"}}\n" +
+            "- TEXT: your plain text message to the user\n\n" +
+            "STEP-BY-STEP PROCESS:\n" +
+            "1. Read the user's message carefully.\n" +
+            "2. Decide which tool to use (if any).\n" +
+            "3. For the chosen tool, go through EACH required parameter one by one.\n" +
+            "4. For each parameter, ask: did the user EXPLICITLY mention this value?\n" +
+            "5. If ALL required parameters are found in the user's message, respond with TOOL_CALL.\n" +
+            "6. If even ONE required parameter is missing, respond with TEXT: and ask the user to provide it.\n\n" +
+            "STRICT RULES:\n" +
+            "- NEVER guess, assume, or make up parameter values.\n" +
+            "- If the user says \"create event\" but does not mention a time, you MUST ask for the time.\n" +
+            "- If the user says \"meeting tomorrow\" but does not mention duration, you MUST ask for duration.\n" +
+            "- Only use values that appear in the user's actual words.\n" +
+            "- \"next week\" means 7 days from today. \"tomorrow\" means $tomorrow.\n" +
+            "- Time conversion: noon=12:00, 1pm=13:00, 2pm=14:00, 3pm=15:00, 4pm=16:00, " +
+            "5pm=17:00, 6pm=18:00, 7pm=19:00, 8pm=20:00, 9pm=21:00.\n" +
+            "- Duration conversion: \"1 hour\"=60, \"30 minutes\"=30, \"2 hours\"=120, \"1.5 hours\"=90.\n" +
+            "- Tools with no required parameters (like list_events) can be called immediately.\n" +
+            "- Always respond with exactly one TOOL_CALL or one TEXT. Never both."
     }
 
-    private fun buildPrompt(system: String, userMessage: String): String =
-        "<|im_start|>system\n$system<|im_end|>\n" +
-            "<|im_start|>user\n$userMessage<|im_end|>\n" +
-            "<|im_start|>assistant\n"
+    // endregion
 
-    private fun buildFollowUpPrompt(toolName: String, toolResult: String, isError: Boolean): String {
-        val instruction = if (isError) {
-            "The action failed. Ask the user for the missing information. Be brief."
-        } else {
-            "Tell the user what you did in first person (e.g. \"I created...\", \"I found...\", " +
-                "\"You have no events...\"). Be brief and friendly."
-        }
-        return "<|im_start|>system\n" +
-            "You are a calendar assistant. $instruction " +
-            "Do NOT mention tools, functions, IDs, or technical details. " +
-            "Do NOT call any tools. Do NOT output JSON.<|im_end|>\n" +
-            "<|im_start|>user\nAction: $toolName\nResult: $toolResult<|im_end|>\n" +
-            "<|im_start|>assistant\n"
+    // region Response formatting
+
+    private fun formatSuccessResponse(toolName: String, result: String): String = when {
+        toolName == "create_event" ->
+            result
+                .replace("created successfully.", "")
+                .replace("Event", "I created")
+                .trim().trimEnd('.')
+                .plus(".")
+        toolName == "list_events" && result == "[]" -> "You have no events this month."
+        toolName == "list_events" -> "Here are your events:\n$result"
+        toolName == "find_nearest_event" && result.contains("No upcoming") -> result
+        toolName == "find_nearest_event" -> "Your nearest event:\n$result"
+        else -> result
     }
+
+    // endregion
+
+    // region Tool call extraction
 
     @Suppress("TooGenericExceptionCaught", "ReturnCount")
     private fun extractToolCall(response: String): ToolCall? {
-        val stripped = response.replace(Regex("```\\w*\\n?"), "").trim()
+        val stripped = response
+            .replace(Regex("```\\w*\\n?"), "")
+            .replace("<|im_end|>", "")
+            .trim()
 
-        val toolCallMatch = Regex("<tool_call>\\s*([\\s\\S]*?)\\s*</tool_call>").find(stripped)
-        if (toolCallMatch != null) {
-            return parseToolCallJson(toolCallMatch.groupValues[1].trim())
-        }
+        // TOOL_CALL: prefix
+        val toolCallPrefix = Regex("""TOOL_CALL:\s*(\{[\s\S]*\})""").find(stripped)
+        if (toolCallPrefix != null) return parseToolCallJson(toolCallPrefix.groupValues[1].trim())
 
+        // Hermes: <tool_call>JSON</tool_call>
+        val hermesMatch = Regex("<tool_call>\\s*([\\s\\S]*?)\\s*</tool_call>").find(stripped)
+        if (hermesMatch != null) return parseToolCallJson(hermesMatch.groupValues[1].trim())
+
+        // Raw JSON with name field
         val braceStart = stripped.indexOf('{')
         if (braceStart != -1) {
             val braceEnd = findMatchingBrace(stripped, braceStart)
             if (braceEnd > braceStart) {
                 val json = stripped.substring(braceStart, braceEnd + 1)
-                if (json.contains("\"name\"")) {
-                    return parseToolCallJson(json)
-                }
+                if (json.contains("\"name\"")) return parseToolCallJson(json)
             }
         }
 
-        val funcMatch = Regex("""(\w+)\(\s*\)""").find(stripped)
-        if (funcMatch != null) {
-            return ToolCall(funcMatch.groupValues[1], emptyMap())
+        // Flat JSON with create_event params
+        if (braceStart != -1) {
+            val flatResult = parseFlatToolCallJson(stripped)
+            if (flatResult != null) return flatResult
         }
 
+        // Function call syntax: tool_name()
+        val funcMatch = Regex("""(\w+)\(\s*\)""").find(stripped)
+        if (funcMatch != null) return ToolCall(funcMatch.groupValues[1], emptyMap())
+
         return null
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun parseFlatToolCallJson(text: String): ToolCall? = try {
+        val braceStart = text.indexOf('{')
+        if (braceStart == -1) return null
+        val braceEnd = findMatchingBrace(text, braceStart)
+        if (braceEnd <= braceStart) return null
+        val obj = JSONObject(text.substring(braceStart, braceEnd + 1))
+        val keys = mutableSetOf<String>()
+        obj.keys().forEach { keys.add(it) }
+        if (!keys.containsAll(listOf("title", "date"))) return null
+        val args = mutableMapOf<String, Any?>()
+        obj.keys().forEach { key -> args[key] = obj.opt(key) }
+        ToolCall("create_event", args)
+    } catch (_: Exception) {
+        null
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -192,12 +256,16 @@ class LlamatikLlmClient @Inject constructor(
         null
     }
 
+    // endregion
+
     private fun cleanResponse(response: String): String = response
         .replace(Regex("<think>[\\s\\S]*?</think>"), "")
         .replace("</think>", "")
         .replace(Regex("<tool_call>[\\s\\S]*?</tool_call>"), "")
+        .replace(Regex("TOOL_CALL:\\s*\\{[\\s\\S]*\\}"), "")
         .replace("<|im_end|>", "")
         .replace(Regex("```\\w*\\n?"), "")
+        .replace(Regex("^TEXT:\\s*", RegexOption.MULTILINE), "")
         .trim()
 
     private fun findMatchingBrace(text: String, openIndex: Int): Int {

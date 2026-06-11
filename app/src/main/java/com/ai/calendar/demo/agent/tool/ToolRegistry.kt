@@ -37,7 +37,7 @@ class ToolRegistry @Inject constructor(
                         put("description", param.description)
                     }
                 )
-                required.put(param.name)
+                if (param.required) required.put(param.name)
             }
             toolsArray.put(
                 JSONObject().apply {
@@ -61,6 +61,26 @@ class ToolRegistry @Inject constructor(
             )
         }
         return toolsArray.toString(2)
+    }
+
+    fun toGemmaFunctionDeclarations(): String = buildString {
+        tools.forEach { tool ->
+            append("<start_function_declaration>declaration:${tool.name}{")
+            append("description:<escape>${tool.description}<escape>")
+            if (tool.parameters.isNotEmpty()) {
+                append(",parameters:{properties:{")
+                append(
+                    tool.parameters.joinToString(",") { param ->
+                        "${param.name}:{description:<escape>${param.description}<escape>," +
+                            "type:<escape>${param.type.label.uppercase()}<escape>}"
+                    }
+                )
+                append("},required:[")
+                append(tool.parameters.joinToString(",") { "<escape>${it.name}<escape>" })
+                append("],type:<escape>OBJECT<escape>}")
+            }
+            append("}<end_function_declaration>")
+        }
     }
 
     suspend fun executeTool(name: String, args: Map<String, Any?>): String {

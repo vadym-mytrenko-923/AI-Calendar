@@ -21,13 +21,26 @@ class CreateEventTool @Inject constructor(
 ) : LlmAgentTool {
     override val name: String = "create_event"
 
-    override val description: String = "Create calendar event"
+    override val description: String =
+        "Create a calendar event. Only call when user provides title, date, time, and duration."
 
     override val parameters: List<ToolParam> = listOf(
-        ToolParam("title", ParamType.STRING, "The title of the event"),
-        ToolParam("date", ParamType.STRING, "The date in YYYY-MM-DD format"),
-        ToolParam("start_time", ParamType.STRING, "The start time in HH:mm format (24-hour)"),
-        ToolParam("duration_minutes", ParamType.INTEGER, "Duration in minutes"),
+        ToolParam("title", ParamType.STRING, "Event title as stated by the user"),
+        ToolParam(
+            "date",
+            ParamType.STRING,
+            "Date in YYYY-MM-DD. today=${LocalDate.now()}, tomorrow=${LocalDate.now().plusDays(1)}",
+        ),
+        ToolParam(
+            "start_time",
+            ParamType.STRING,
+            "Start time in HH:mm 24h format. noon=12:00, 1pm=13:00, 2pm=14:00, 5pm=17:00, 9pm=21:00",
+        ),
+        ToolParam(
+            "duration_minutes",
+            ParamType.INTEGER,
+            "Duration in minutes as stated by the user",
+        ),
     )
 
     @Suppress("ReturnCount")

@@ -153,7 +153,6 @@ dependencies {
     implementation(libs.timber)
 
     // On-device LLM
-    implementation(libs.litert.lm)
     implementation(libs.llamatik)
 
     detektPlugins(libs.detektFormatting)
