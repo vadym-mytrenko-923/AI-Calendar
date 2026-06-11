@@ -2,6 +2,7 @@ package com.ai.calendar.demo.di.ai
 
 import com.ai.calendar.demo.agent.base.LlmAgentTool
 import com.ai.calendar.demo.agent.client.LlamatikLlmClient
+import com.ai.calendar.demo.agent.model.GenerationConfig
 import com.ai.calendar.demo.agent.tool.CreateEventTool
 import com.ai.calendar.demo.agent.tool.FindNearestEventTool
 import com.ai.calendar.demo.agent.tool.ListEventsTool
@@ -16,6 +17,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AiModule {
+
+    @Provides
+    @Singleton
+    fun provideGenerationConfig(): GenerationConfig = GenerationConfig()
 
     @Provides
     @Singleton

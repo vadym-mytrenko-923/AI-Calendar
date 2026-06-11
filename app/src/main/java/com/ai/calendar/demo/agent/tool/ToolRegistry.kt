@@ -11,19 +11,6 @@ class ToolRegistry @Inject constructor(
     private val tools: Set<@JvmSuppressWildcards LlmAgentTool>,
 ) {
 
-    fun toPromptDescription(): String = buildString {
-        appendLine("Available tools:")
-        tools.forEach { tool ->
-            appendLine("- ${tool.name}: ${tool.description}")
-            if (tool.parameters.isNotEmpty()) {
-                appendLine("  Parameters:")
-                tool.parameters.forEach { param ->
-                    appendLine("    ${param.name} (${param.type.label}): ${param.description}")
-                }
-            }
-        }
-    }
-
     fun toHermesToolsBlock(): String {
         val toolsArray = JSONArray()
         tools.forEach { tool ->
@@ -35,7 +22,7 @@ class ToolRegistry @Inject constructor(
                     JSONObject().apply {
                         put("type", param.type.label)
                         put("description", param.description)
-                    }
+                    },
                 )
                 if (param.required) required.put(param.name)
             }
@@ -53,35 +40,20 @@ class ToolRegistry @Inject constructor(
                                     put("type", "object")
                                     put("properties", properties)
                                     put("required", required)
-                                }
+                                },
                             )
-                        }
+                        },
                     )
-                }
+                },
             )
         }
         return toolsArray.toString(2)
     }
 
-    fun toGemmaFunctionDeclarations(): String = buildString {
-        tools.forEach { tool ->
-            append("<start_function_declaration>declaration:${tool.name}{")
-            append("description:<escape>${tool.description}<escape>")
-            if (tool.parameters.isNotEmpty()) {
-                append(",parameters:{properties:{")
-                append(
-                    tool.parameters.joinToString(",") { param ->
-                        "${param.name}:{description:<escape>${param.description}<escape>," +
-                            "type:<escape>${param.type.label.uppercase()}<escape>}"
-                    }
-                )
-                append("},required:[")
-                append(tool.parameters.joinToString(",") { "<escape>${it.name}<escape>" })
-                append("],type:<escape>OBJECT<escape>}")
-            }
-            append("}<end_function_declaration>")
-        }
-    }
+    fun matchToolByKeys(jsonKeys: Set<String>): String? =
+        tools.firstOrNull { tool ->
+            tool.identifyingKeys.isNotEmpty() && jsonKeys.containsAll(tool.identifyingKeys)
+        }?.name
 
     suspend fun executeTool(name: String, args: Map<String, Any?>): String {
         val normalized = name.trim().lowercase().replace(" ", "_")
